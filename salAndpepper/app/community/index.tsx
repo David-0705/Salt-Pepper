@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  TouchableOpacity, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
   FlatList,
   ActivityIndicator
 } from 'react-native';
@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { Marker, Heatmap, PROVIDER_GOOGLE } from 'react-native-maps';
 import { LineChart, BarChart } from 'react-native-chart-kit';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { Link, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 // Define types
@@ -124,14 +124,14 @@ const CommunityPage: React.FC = () => {
   const renderSafetyScore = (score: number): JSX.Element => {
     // Ensure score is a number
     const numericScore = typeof score === 'number' ? score : 0;
-    
+
     let color = '#FF0000'; // Red for low scores
     if (numericScore >= 7) {
       color = '#4CAF50'; // Green for high scores
     } else if (numericScore >= 5) {
       color = '#FFC107'; // Yellow for medium scores
     }
-    
+
     return (
       <View style={[styles.scoreContainer, { borderColor: color }]}>
         <Text style={[styles.scoreText, { color }]}>{numericScore.toFixed(1)}</Text>
@@ -166,6 +166,18 @@ const CommunityPage: React.FC = () => {
                 <Text style={styles.rankingsButtonText}>See Area Rankings</Text>
                 <Ionicons name="chevron-forward" size={16} color="#FFF" />
               </TouchableOpacity>
+              {/* <TouchableOpacity style={styles.rankingsButton}>
+                <Link href="/area-ranking">
+                  <Text style={styles.rankingsButtonText}>See Area Rankings</Text>
+                </Link>
+                <Ionicons name="chevron-forward" size={16} color="#FFF" />
+              </TouchableOpacity> */}
+              {/* <TouchableOpacity style={styles.rankingsButton}>
+                <Link href="/area-ranking" style={styles.rankingsButtonText}>
+                  See Area Rankings
+                  <Ionicons name="chevron-forward" size={16} color="#FFF" />
+                </Link>
+              </TouchableOpacity> */}
             </View>
 
             <Text style={styles.sectionTitle}>Safety Trend</Text>
@@ -214,12 +226,12 @@ const CommunityPage: React.FC = () => {
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                  <View 
+                  <View
                     style={[
-                      styles.areaCard, 
-                      { 
-                        backgroundColor: item.rating >= 7 ? '#E8F5E9' : 
-                                        item.rating >= 5 ? '#FFF9C4' : '#FFEBEE' 
+                      styles.areaCard,
+                      {
+                        backgroundColor: item.rating >= 7 ? '#E8F5E9' :
+                          item.rating >= 5 ? '#FFF9C4' : '#FFEBEE'
                       }
                     ]}
                   >
@@ -233,7 +245,7 @@ const CommunityPage: React.FC = () => {
             )}
           </View>
         );
-      
+
       case 'discussions':
         return (
           <View style={styles.tabContent}>
@@ -244,7 +256,7 @@ const CommunityPage: React.FC = () => {
                 <Text style={styles.newPostText}>New Post</Text>
               </TouchableOpacity>
             </View>
-            
+
             {safetyData.recentDiscussions && safetyData.recentDiscussions.length > 0 ? (
               safetyData.recentDiscussions.map(discussion => (
                 <TouchableOpacity key={discussion.id} style={styles.discussionItem}>
@@ -262,7 +274,7 @@ const CommunityPage: React.FC = () => {
             )}
           </View>
         );
-      
+
       default:
         return null;
     }
@@ -273,22 +285,22 @@ const CommunityPage: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Community</Text>
       </View>
-      
+
       <View style={styles.tabsContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.tab, activeTab === 'overview' && styles.activeTab]}
           onPress={() => setActiveTab('overview')}
         >
           <Text style={[styles.tabText, activeTab === 'overview' && styles.activeTabText]}>Overview</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.tab, activeTab === 'discussions' && styles.activeTab]}
           onPress={() => setActiveTab('discussions')}
         >
           <Text style={[styles.tabText, activeTab === 'discussions' && styles.activeTabText]}>Discussions</Text>
         </TouchableOpacity>
       </View>
-      
+
       <ScrollView style={styles.contentContainer}>
         {renderTabContent()}
       </ScrollView>
