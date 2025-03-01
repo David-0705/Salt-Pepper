@@ -15,6 +15,8 @@ export default function Index() {
       <Link href="/area-ranking">Area-Ranking</Link>
       <Link href="/login">login</Link>
       <Link href="/register">register</Link>
+      <Link href="/main">Crime Upload</Link>
+      {/* <Link href="/main">Crime Upload</Link> */}
     </View>
   );
 }

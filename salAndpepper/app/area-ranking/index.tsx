@@ -219,7 +219,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ safetyTrends, cityName })
     <Text style={styles.sectionTitle}>Safety Trends for {cityName}</Text>
     <LineChart
       data={safetyTrends}
-      width={350}
+      width={300}
       height={220}
       yAxisSuffix="%"
       chartConfig={{
@@ -297,7 +297,7 @@ const AreaSafetyRankings: React.FC = () => {
           mapRef={mapRef}
         />
         <StatisticalBreakdown neighborhoods={city.neighborhoods} />
-        <TrendAnalysis safetyTrends={city.safetyTrends} cityName={city.name} />
+        <TrendAnalysis  safetyTrends={city.safetyTrends} cityName={city.name} />
         <CommunityReports reports={city.communityReports} />
       </ScrollView>
     </SafeAreaView>
@@ -320,6 +320,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
+    paddingBottom: 10,
   },
   tabButton: {
     paddingHorizontal: 20,
@@ -407,6 +408,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     marginBottom: 4,
+  },
+  trendcontainer: {
+    overflow: 'hidden',
   },
 });
 

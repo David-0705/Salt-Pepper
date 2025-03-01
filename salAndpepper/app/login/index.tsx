@@ -1,4 +1,3 @@
-import { Link } from "expo-router";
 import React, { useState } from 'react';
 import {
   View,
@@ -222,7 +221,7 @@ const LoginScreen: React.FC = () => {
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.logoContainer}>
-          <Text style={styles.logoText}>MyApp</Text>
+          <Text style={styles.logoText}>Suno</Text>
         </View>
 
         <View style={styles.formContainer}>

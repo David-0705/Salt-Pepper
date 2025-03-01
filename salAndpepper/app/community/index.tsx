@@ -1,3 +1,4 @@
+import { Link as L } from "expo-router";
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -163,7 +164,7 @@ const CommunityPage: React.FC = () => {
                 style={styles.rankingsButton}
                 onPress={() => navigation.navigate('AreaSafetyRankings')}
               >
-                <Text style={styles.rankingsButtonText}>See Area Rankings</Text>
+                <L href='/area-ranking'><Text style={styles.rankingsButtonText}>See Area Rankings</Text></L>
                 <Ionicons name="chevron-forward" size={16} color="#FFF" />
               </TouchableOpacity>
               {/* <TouchableOpacity style={styles.rankingsButton}>
