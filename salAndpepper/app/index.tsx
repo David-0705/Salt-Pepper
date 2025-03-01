@@ -13,6 +13,8 @@ export default function Index() {
       <Text>Edit app/index.tsx to edit this screen.</Text>
       <Link href="/community">Community</Link>
       <Link href="/area-ranking">Area-Ranking</Link>
+      <Link href="/login">login</Link>
+      <Link href="/register">register</Link>
     </View>
   );
 }
