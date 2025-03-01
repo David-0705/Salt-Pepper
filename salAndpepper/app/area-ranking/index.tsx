@@ -49,12 +49,13 @@ interface CityDataMap {
 // City Data
 const cityData: CityDataMap = {
   sanFrancisco: {
-    name: "San Francisco",
+    name: "Kurla",
+   
     neighborhoods: [
-      { id: 1, name: 'Downtown', latitude: 37.7749, longitude: -122.4194, safetyScore: 85, crimes: { theft: 10, assault: 5, vandalism: 3 } },
-      { id: 2, name: 'Mission District', latitude: 37.7599, longitude: -122.4148, safetyScore: 79, crimes: { theft: 14, assault: 7, vandalism: 5 } },
-      { id: 3, name: 'Nob Hill', latitude: 37.7934, longitude: -122.4166, safetyScore: 92, crimes: { theft: 4, assault: 1, vandalism: 2 } },
-      { id: 4, name: 'Haight-Ashbury', latitude: 37.7692, longitude: -122.4481, safetyScore: 82, crimes: { theft: 8, assault: 3, vandalism: 4 } },
+      { id: 1, name: 'Kurla Station', latitude: 19.065416002565527, longitude: 72.87907805896094, safetyScore: 85, crimes: { theft: 10, assault: 5, vandalism: 3 } },
+      { id: 2, name: 'Nehru Nagar', latitude: 19.063091873085458, longitude: 72.87984194351502, safetyScore: 79, crimes: { theft: 14, assault: 7, vandalism: 5 } },
+      { id: 3, name: 'Kurla Court', latitude: 19.063361785308505, longitude:  72.87483921040904, safetyScore: 92, crimes: { theft: 4, assault: 1, vandalism: 2 } },
+      { id: 4, name: 'Tilak Nagar Station',latitude: 19.069501141016474, longitude: 72.88831314224714,  safetyScore: 82, crimes: { theft: 8, assault: 3, vandalism: 4 } },
     ],
     safetyTrends: {
       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
@@ -62,89 +63,89 @@ const cityData: CityDataMap = {
     },
     communityReports: [
       { id: 1, user: 'John Doe', comment: 'Very safe area, especially during the day.', rating: 5 },
-      { id: 2, user: 'Jane Smith', comment: 'Some thefts reported at night.', rating: 3 },
-      { id: 3, user: 'Alice Johnson', comment: 'Great community, feels secure.', rating: 4 },
+      { id: 2, user: 'Ramesh Rana', comment: 'Some thefts reported at night.', rating: 3 },
+      { id: 3, user: 'Amar Ahemad', comment: 'Great community, feels secure.', rating: 4 },
     ],
     mapRegion: {
-      latitude: 37.7749,
-      longitude: -122.4194,
-      latitudeDelta: 0.1,
-      longitudeDelta: 0.1,
+      latitude: 19.065416002565527,      
+      longitude:72.88831314224714,
+      latitudeDelta: 0.04,
+      longitudeDelta: 0.02,
     }
   },
   
   newYork: {
-    name: "New York",
-    neighborhoods: [
-      { id: 1, name: 'Manhattan Midtown', latitude: 40.7549, longitude: -73.9840, safetyScore: 87, crimes: { theft: 12, assault: 4, vandalism: 6 } },
-      { id: 2, name: 'Brooklyn Heights', latitude: 40.6964, longitude: -73.9932, safetyScore: 91, crimes: { theft: 5, assault: 2, vandalism: 3 } },
-      { id: 3, name: 'Upper East Side', latitude: 40.7736, longitude: -73.9566, safetyScore: 94, crimes: { theft: 3, assault: 1, vandalism: 2 } },
-      { id: 4, name: 'Greenwich Village', latitude: 40.7347, longitude: -74.0014, safetyScore: 88, crimes: { theft: 7, assault: 3, vandalism: 4 } },
-    ],
+    name: "Andheri",
+neighborhoods: [
+  { id: 1, name: 'Andheri East', latitude: 19.1178, longitude: 72.8478, safetyScore: 87, crimes: { theft: 12, assault: 4, vandalism: 6 } },
+  { id: 2, name: 'Andheri West', latitude: 19.1360, longitude: 72.8296, safetyScore: 91, crimes: { theft: 5, assault: 2, vandalism: 3 } },
+  { id: 3, name: 'Lokhandwala', latitude: 19.1412, longitude: 72.8220, safetyScore: 94, crimes: { theft: 3, assault: 1, vandalism: 2 } },
+  { id: 4, name: 'JB Nagar', latitude: 19.1081, longitude: 72.8641, safetyScore: 88, crimes: { theft: 7, assault: 3, vandalism: 4 } },
+],
     safetyTrends: {
       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
       datasets: [{ data: [83, 86, 89, 90, 88, 92] }],
     },
     communityReports: [
-      { id: 1, user: 'Mike Richards', comment: 'Well-lit streets, feel safe walking at night.', rating: 5 },
-      { id: 2, user: 'Sarah Chen', comment: 'Good police presence, quick response times.', rating: 4 },
-      { id: 3, user: 'Tom Wilson', comment: 'Some issues with pickpockets in touristy areas.', rating: 3 },
+      { id: 1, user: 'Mohan Maru', comment: 'Well-lit streets, feel safe walking at night.', rating: 5 },
+      { id: 2, user: 'Sanjay Kadam', comment: 'Good police presence, quick response times.', rating: 4 },
+      { id: 3, user: 'Tejas Parap', comment: 'Some issues with pickpockets in touristy areas.', rating: 3 },
     ],
     mapRegion: {
-      latitude: 40.7128,
-      longitude: -74.0060,
-      latitudeDelta: 0.15,
-      longitudeDelta: 0.15,
+      latitude:  19.1178,
+      longitude: 72.8641,
+      latitudeDelta: 0.05,
+      longitudeDelta: 0.12,
     }
   },
   
   chicago: {
-    name: "Chicago",
+    name: "Mahim",
     neighborhoods: [
-      { id: 1, name: 'The Loop', latitude: 41.8832, longitude: -87.6316, safetyScore: 83, crimes: { theft: 15, assault: 8, vandalism: 7 } },
-      { id: 2, name: 'Lincoln Park', latitude: 41.9214, longitude: -87.6463, safetyScore: 90, crimes: { theft: 6, assault: 2, vandalism: 3 } },
-      { id: 3, name: 'Wicker Park', latitude: 41.9088, longitude: -87.6766, safetyScore: 84, crimes: { theft: 9, assault: 4, vandalism: 5 } },
-      { id: 4, name: 'Hyde Park', latitude: 41.7943, longitude: -87.5917, safetyScore: 86, crimes: { theft: 7, assault: 3, vandalism: 4 } },
+      { id: 1, name: 'Mahim West', latitude: 19.0369, longitude: 72.8397, safetyScore: 83, crimes: { theft: 15, assault: 8, vandalism: 7 } },
+      { id: 2, name: 'Mahim East', latitude: 19.0420, longitude: 72.8461, safetyScore: 90, crimes: { theft: 6, assault: 2, vandalism: 3 } },
+      { id: 3, name: 'Shivaji Park', latitude: 19.0284, longitude: 72.8382, safetyScore: 84, crimes: { theft: 9, assault: 4, vandalism: 5 } },
+      { id: 4, name: 'Mahim Creek', latitude: 19.0448, longitude: 72.8335, safetyScore: 86, crimes: { theft: 7, assault: 3, vandalism: 4 } },
     ],
     safetyTrends: {
       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
       datasets: [{ data: [75, 78, 82, 85, 87, 89] }],
     },
     communityReports: [
-      { id: 1, user: 'David Miller', comment: 'Neighborhood watch is very active and effective.', rating: 5 },
-      { id: 2, user: 'Lauren Adams', comment: 'Some concerns after dark in certain areas.', rating: 3 },
-      { id: 3, user: 'Robert Chen', comment: 'Overall good experience, community is watchful.', rating: 4 },
+      { id: 1, user: 'Dinesh Davan', comment: 'Neighborhood watch is very active and effective.', rating: 5 },
+      { id: 2, user: 'Lavanya Mohan', comment: 'Some concerns after dark in certain areas.', rating: 3 },
+      { id: 3, user: 'Ramesh Chavan', comment: 'Overall good experience, community is watchful.', rating: 4 },
     ],
     mapRegion: {
-      latitude: 41.8781,
-      longitude: -87.6298,
-      latitudeDelta: 0.12,
-      longitudeDelta: 0.12,
+      latitude: 19.0369,
+      longitude:72.8335,
+      latitudeDelta: 0.02,
+      longitudeDelta: 0.02,
     }
   },
   
   losAngeles: {
-    name: "Los Angeles",
+    name: "Dombivili",
     neighborhoods: [
-      { id: 1, name: 'Downtown LA', latitude: 34.0407, longitude: -118.2468, safetyScore: 76, crimes: { theft: 18, assault: 9, vandalism: 12 } },
-      { id: 2, name: 'Santa Monica', latitude: 34.0195, longitude: -118.4912, safetyScore: 89, crimes: { theft: 7, assault: 2, vandalism: 4 } },
-      { id: 3, name: 'Beverly Hills', latitude: 34.0736, longitude: -118.4004, safetyScore: 95, crimes: { theft: 3, assault: 1, vandalism: 2 } },
-      { id: 4, name: 'Silver Lake', latitude: 34.0839, longitude: -118.2702, safetyScore: 82, crimes: { theft: 10, assault: 4, vandalism: 6 } },
+      { id: 1, name: 'Tharkuli Station', latitude: 19.227041127633598,  longitude: -73.10073187902664, safetyScore: 76, crimes: { theft: 18, assault: 9, vandalism: 12 } },
+      { id: 2, name: 'Dombivili East', latitude: 19.215205970369077, longitude:  73.09222869991616, safetyScore: 89, crimes: { theft: 7, assault: 2, vandalism: 4 } },
+      { id: 3, name: 'Dombivili West', latitude: 19.221652037197902, longitude:  73.08079373866246, safetyScore: 95, crimes: { theft: 3, assault: 1, vandalism: 2 } },
+      { id: 4, name: 'MIDC', latitude:19.21107441554947,  longitude: 73.09499858207772, safetyScore: 82, crimes: { theft: 10, assault: 4, vandalism: 6 } },
     ],
     safetyTrends: {
       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
       datasets: [{ data: [72, 75, 79, 83, 85, 84] }],
     },
     communityReports: [
-      { id: 1, user: 'Jessica Wong', comment: 'Love the community policing efforts here.', rating: 4 },
-      { id: 2, user: 'Marcus Johnson', comment: 'Great improvements in safety over last year.', rating: 5 },
-      { id: 3, user: 'Olivia Martinez', comment: 'Some property crime issues but overall good.', rating: 3 },
+      { id: 1, user: 'Jignesh Wani', comment: 'Love the community policing efforts here.', rating: 4 },
+      { id: 2, user: 'Sajid Khan', comment: 'Great improvements in safety over last year.', rating: 5 },
+      { id: 3, user: 'Ahemad Kazi', comment: 'Some property crime issues but overall good.', rating: 3 },
     ],
     mapRegion: {
-      latitude: 34.0522,
-      longitude: -118.2437,
-      latitudeDelta: 0.18,
-      longitudeDelta: 0.18,
+      latitude:19.227041127633598,
+      longitude: 73.0978770574869,
+      latitudeDelta: 0.05,
+      longitudeDelta: 0.1,
     }
   }
 };
@@ -237,7 +238,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ safetyTrends, cityName })
 );
 
 const CommunityReports: React.FC<CommunityReportsProps> = ({ reports }) => (
-  <View style={styles.section}>
+  <View style={styles.space }>
     <Text style={styles.sectionTitle}>Community Reports</Text>
     {reports.map((report) => (
       <View key={report.id} style={styles.reportItem}>
@@ -355,6 +356,18 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
+  space:{
+    margin: 16,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    marginBottom:'22%',
+  },
   section: {
     margin: 16,
     backgroundColor: '#fff',
@@ -365,6 +378,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
+    
   },
   sectionTitle: {
     fontSize: 20,
