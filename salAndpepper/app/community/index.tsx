@@ -1,4 +1,5 @@
 import { Link as L } from "expo-router";
+import Navbar from "@/components/navbar";
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -305,7 +306,10 @@ const CommunityPage: React.FC = () => {
       <ScrollView style={styles.contentContainer}>
         {renderTabContent()}
       </ScrollView>
+      <Navbar/>
+
     </SafeAreaView>
+    
   );
 };
 
