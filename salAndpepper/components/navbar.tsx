@@ -24,20 +24,20 @@ const BottomNavbar = () => {
         <View style={styles.bottomNavbar}>
           <View style={styles.navbarContent}>
 
-            <TouchableOpacity onPress={() => router.push("/community")} style={styles.navItem}>
-              <Image source={require("../assets/images/comus.png")} style={{ width: 24, height: 24 }} />
+            {/* <TouchableOpacity onPress={() => router.push("/community")} style={styles.navItem}> */}
+             <Link href='/community'><Image source={require("../assets/images/comus.png")} style={{width: 36, height: 36 }} /></Link> 
               {/* <Text style={styles.navText}>Community</Text> */}
-            </TouchableOpacity>;
+            {/* </TouchableOpacity>; */}
 
 
             <TouchableOpacity onPress={() => router.push("/main")} style={styles.navItem}>
-              <Image source={require("../assets/images/spyware.png")} style={{ width: 24, height: 24 }} />
+              <Image style={styles.centerimg} source={require("../assets/images/spyware.png")}  />
               {/* <Ionicons name="cloud-upload-outline" size={24} color="white" /> */}
               {/* <Text style={styles.navText}>Upload</Text> */}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.navItem} onPress={() => router.push("/area-ranking")}>
-              <Image source={require("../assets/images/area.png")} style={{ width: 24, height: 24 }} />
+              <Image source={require("../assets/images/area.png")} style={{ width: 36, height: 36}} />
               {/* <Ionicons name="cloud-upload-outline" size={24} color="white" /> */}
               {/* <Text style={styles.navText}>Area</Text> */}
             </TouchableOpacity>
@@ -74,9 +74,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  contentText: {
-    fontSize: 18,
-    color: '#333',
+  // contentText: {
+  //   fontSize: 18,
+  //   color: '#333',
+  // },
+  centerimg:{
+    width: 36, height: 36,
+    marginLeft:"12%",
   },
   bottomNavbar: {
     width: width + 20,
@@ -84,7 +88,7 @@ const styles = StyleSheet.create({
 
     bottom: 0,
 
-    backgroundColor: '#333',
+    backgroundColor: '#4169E1',
     paddingBottom: Platform.OS === 'ios' ? (Platform.isPad ? 0 : 20) : 0,
     borderTopWidth: 1,
     borderTopColor: '#444',

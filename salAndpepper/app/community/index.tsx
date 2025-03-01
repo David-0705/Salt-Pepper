@@ -70,6 +70,7 @@ const MOCK_SAFETY_DATA: SafetyData = {
     assault: 5,
     vandalism: 12,
     burglary: 8,
+    Homicide:2,
     other: 6
   },
   trendData: {
@@ -83,10 +84,10 @@ const MOCK_SAFETY_DATA: SafetyData = {
     ]
   },
   nearbyAreas: [
-    { id: 1, name: 'Downtown', rating: 6.4 },
-    { id: 2, name: 'Riverside', rating: 8.1 },
-    { id: 3, name: 'Oakwood', rating: 7.8 },
-    { id: 4, name: 'Westside', rating: 6.9 }
+    { id: 1, name: 'Kurla', rating: 6.4 },
+    { id: 2, name: 'Andheri', rating: 8.1 },
+    { id: 3, name: 'Mahim', rating: 7.8 },
+    { id: 4, name: 'Thkurli', rating: 6.9 }
   ],
   recentDiscussions: [
     { id: 1, title: 'New streetlights on Main St', author: 'Jane D.', replies: 12, timestamp: '2h ago' },
@@ -184,9 +185,10 @@ const CommunityPage: React.FC = () => {
 
             <Text style={styles.sectionTitle}>Safety Trend</Text>
             {safetyData.trendData && safetyData.trendData.labels && safetyData.trendData.datasets ? (
-              <LineChart
+              <View style={styles.graphstyle}>
+                <LineChart
                 data={safetyData.trendData}
-                width={300}
+                width={325}
                 height={180}
                 chartConfig={{
                   backgroundColor: '#FFF',
@@ -202,6 +204,7 @@ const CommunityPage: React.FC = () => {
                 bezier
                 style={styles.chart}
               />
+              </View>
             ) : (
               <Text style={styles.errorText}>Safety trend data not available</Text>
             )}
@@ -224,6 +227,7 @@ const CommunityPage: React.FC = () => {
             {safetyData.nearbyAreas && safetyData.nearbyAreas.length > 0 ? (
               <FlatList
                 data={safetyData.nearbyAreas}
+                style={styles.space}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={(item) => item.id.toString()}
@@ -306,8 +310,8 @@ const CommunityPage: React.FC = () => {
       <ScrollView style={styles.contentContainer}>
         {renderTabContent()}
       </ScrollView>
+    {/* <View style={styles.space}></View> */}
       <Navbar/>
-
     </SafeAreaView>
     
   );
@@ -317,6 +321,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5'
+  },
+  space:{
+    marginBottom:60
+  },
+  graphstyle:{
+    backgroundColor:'#ffff',
+    paddingTop:'5%',
+    paddingRight:'15%',
+    borderRadius:20
   },
   header: {
     backgroundColor: '#4169E1',
@@ -375,7 +388,8 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 3
+    shadowRadius: 3,
+    padding:10,
   },
   scoreText: {
     fontSize: 28,
@@ -450,7 +464,8 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
-    shadowRadius: 2
+    shadowRadius: 2,
+    marginBottom:'2%',
   },
   areaName: {
     fontSize: 16,
