@@ -1,11 +1,11 @@
 import React from 'react';
 import { Image } from 'react-native';
 import { Link, router } from "expo-router";
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
   SafeAreaView,
   Platform,
   Dimensions
@@ -19,31 +19,33 @@ const BottomNavbar = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        
+
         {/* Bottom Navigation Bar */}
         <View style={styles.bottomNavbar}>
           <View style={styles.navbarContent}>
-            
-          <TouchableOpacity onPress={() => router.push("/community")} style={styles.navItem}>
-  <Image source={require("../assets/images/communities.png")} style={{ width: 24, height: 24 }} />
-  <Text style={styles.navText}>Community</Text>
-</TouchableOpacity>;
-          
-            
-            <TouchableOpacity  onPress={() => router.push("/main")} style={styles.navItem}>
-              <Ionicons name="cloud-upload-outline" size={24} color="white" />
-              <Text style={styles.navText}>Upload</Text>
+
+            <TouchableOpacity onPress={() => router.push("/community")} style={styles.navItem}>
+              <Image source={require("../assets/images/comus.png")} style={{ width: 24, height: 24 }} />
+              {/* <Text style={styles.navText}>Community</Text> */}
+            </TouchableOpacity>;
+
+
+            <TouchableOpacity onPress={() => router.push("/main")} style={styles.navItem}>
+              <Image source={require("../assets/images/spyware.png")} style={{ width: 24, height: 24 }} />
+              {/* <Ionicons name="cloud-upload-outline" size={24} color="white" /> */}
+              {/* <Text style={styles.navText}>Upload</Text> */}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.navItem} onPress={() => router.push("/area-ranking")}>
-              <Ionicons name="cloud-upload-outline" size={24} color="white" />
-              <Text style={styles.navText}>Area</Text>
-              </TouchableOpacity>
-            
-            
-            
-            
-            
+              <Image source={require("../assets/images/area.png")} style={{ width: 24, height: 24 }} />
+              {/* <Ionicons name="cloud-upload-outline" size={24} color="white" /> */}
+              {/* <Text style={styles.navText}>Area</Text> */}
+            </TouchableOpacity>
+
+
+
+
+
             {/* <TouchableOpacity style={styles.navItem}>
               <Ionicons name="person-circle-outline" size={24} color="white" />
               <Text style={styles.navText}>Account</Text>
@@ -57,15 +59,15 @@ const BottomNavbar = () => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 1,
+   
     backgroundColor: '#ffff',
   },
   container: {
     flex: 1,
     position: 'relative',
-    alignItems:'center',
-    justifyContent:'center',
-    alignSelf:'center'
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center'
   },
   content: {
     flex: 1,
@@ -77,11 +79,11 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   bottomNavbar: {
-    width: width+20,
+    width: width + 20,
     position: 'absolute',
-  
+
     bottom: 0,
-    
+
     backgroundColor: '#333',
     paddingBottom: Platform.OS === 'ios' ? (Platform.isPad ? 0 : 20) : 0,
     borderTopWidth: 1,
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 60,
-  
+
 
   },
   navItem: {

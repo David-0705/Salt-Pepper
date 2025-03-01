@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import Navbar from "@/components/navbar";
 import { useState, useEffect } from "react"
 import {
   View,
@@ -439,6 +440,7 @@ const CrimeReportScreen: React.FC = () => {
           emergency services.
         </Text>
       </ScrollView>
+      <Navbar/>
     </SafeAreaView>
   )
 }

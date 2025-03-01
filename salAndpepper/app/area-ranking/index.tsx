@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import Navbar from "@/components/navbar";
 import { View, Text, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
 import { LineChart } from 'react-native-chart-kit';
@@ -300,6 +301,7 @@ const AreaSafetyRankings: React.FC = () => {
         <TrendAnalysis  safetyTrends={city.safetyTrends} cityName={city.name} />
         <CommunityReports reports={city.communityReports} />
       </ScrollView>
+      <Navbar/>
     </SafeAreaView>
   );
 };
