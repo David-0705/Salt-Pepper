@@ -88,7 +88,7 @@ const MOCK_SAFETY_DATA: SafetyData = {
     { id: 1, name: 'Kurla', rating: 6.4 },
     { id: 2, name: 'Andheri', rating: 8.1 },
     { id: 3, name: 'Mahim', rating: 7.8 },
-    { id: 4, name: 'Thkurli', rating: 6.9 }
+    { id: 4, name: 'Thakurli', rating: 6.9 }
   ],
   recentDiscussions: [
     { id: 1, title: 'New streetlights on Main St', author: 'Jane D.', replies: 12, timestamp: '2h ago' },
@@ -178,7 +178,7 @@ const CommunityPage: React.FC = () => {
                   onPress={() => setShowSOS(!showSOS)}
                 >
                   <Text style={styles.sosButtonText}>SOS</Text>
-                  <Ionicons name="alert-circle" size={16} color="#FFF" />
+                  <Ionicons name="alert-circle" size={24} color="#FFF" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20
+    // marginBottom: 20
   },
   buttonsContainer: {
     flexDirection: 'column',
@@ -433,11 +433,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    width:150,
+    height:69,
   },
   sosButtonText: {
     color: '#FFF',
     fontWeight: 'bold',
-    marginRight: 4
+    marginRight: 4,
+    fontSize:24,
   },
   sosContainer: {
     marginBottom: 20,
@@ -445,6 +448,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: '#e0e0e0',
+    marginTop:10,
   },
   sectionTitle: {
     fontSize: 18,

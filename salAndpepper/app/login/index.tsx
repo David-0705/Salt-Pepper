@@ -221,7 +221,7 @@ const LoginScreen: React.FC = () => {
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.logoContainer}>
-          <Text style={styles.logoText}>Suno</Text>
+          <Text style={styles.logoText}>Suno!</Text>
         </View>
 
         <View style={styles.formContainer}>

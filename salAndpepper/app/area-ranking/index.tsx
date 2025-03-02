@@ -127,7 +127,7 @@ neighborhoods: [
   losAngeles: {
     name: "Dombivili",
     neighborhoods: [
-      { id: 1, name: 'Tharkuli Station', latitude: 19.227041127633598,  longitude: -73.10073187902664, safetyScore: 76, crimes: { theft: 18, assault: 9, vandalism: 12 } },
+      { id: 1, name: 'Thakurli Station', latitude: 19.227041127633598,  longitude: -73.10073187902664, safetyScore: 76, crimes: { theft: 18, assault: 9, vandalism: 12 } },
       { id: 2, name: 'Dombivili East', latitude: 19.215205970369077, longitude:  73.09222869991616, safetyScore: 89, crimes: { theft: 7, assault: 2, vandalism: 4 } },
       { id: 3, name: 'Dombivili West', latitude: 19.221652037197902, longitude:  73.08079373866246, safetyScore: 95, crimes: { theft: 3, assault: 1, vandalism: 2 } },
       { id: 4, name: 'MIDC', latitude:19.21107441554947,  longitude: 73.09499858207772, safetyScore: 82, crimes: { theft: 10, assault: 4, vandalism: 6 } },

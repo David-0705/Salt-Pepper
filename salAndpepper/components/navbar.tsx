@@ -25,7 +25,7 @@ const BottomNavbar = () => {
           <View style={styles.navbarContent}>
 
             {/* <TouchableOpacity onPress={() => router.push("/community")} style={styles.navItem}> */}
-             <Link href='/community'><Image source={require("../assets/images/comus.png")} style={{width: 36, height: 36 }} /></Link> 
+             <Link href='/community'><Image source={require("../assets/images/comus.png")} style={{width: 40, height: 40 }} /></Link> 
               {/* <Text style={styles.navText}>Community</Text> */}
             {/* </TouchableOpacity>; */}
 
@@ -37,7 +37,7 @@ const BottomNavbar = () => {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.navItem} onPress={() => router.push("/area-ranking")}>
-              <Image source={require("../assets/images/area.png")} style={{ width: 36, height: 36}} />
+              <Image source={require("../assets/images/area.png")} style={{ width: 40, height: 40}} />
               {/* <Ionicons name="cloud-upload-outline" size={24} color="white" /> */}
               {/* <Text style={styles.navText}>Area</Text> */}
             </TouchableOpacity>
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   //   color: '#333',
   // },
   centerimg:{
-    width: 36, height: 36,
+    width: 40, height: 40,
     marginLeft:"12%",
   },
   bottomNavbar: {
