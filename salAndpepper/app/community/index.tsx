@@ -16,6 +16,7 @@ import { LineChart, BarChart } from 'react-native-chart-kit';
 import { Ionicons } from '@expo/vector-icons';
 import { Link, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import SOSFeature from '../../components/sos';
 
 // Define types
 type RootStackParamList = {
@@ -102,6 +103,7 @@ const CommunityPage: React.FC = () => {
   const [safetyData, setSafetyData] = useState<SafetyData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [showSOS, setShowSOS] = useState<boolean>(false);
   const navigation = useNavigation<NavigationProp>();
 
   useEffect(() => {
@@ -162,26 +164,33 @@ const CommunityPage: React.FC = () => {
           <View style={styles.tabContent}>
             <View style={styles.headerRow}>
               {renderSafetyScore(safetyData.overallRating)}
-              <TouchableOpacity 
-                style={styles.rankingsButton}
-                onPress={() => navigation.navigate('AreaSafetyRankings')}
-              >
-                <L href='/area-ranking'><Text style={styles.rankingsButtonText}>See Area Rankings</Text></L>
-                <Ionicons name="chevron-forward" size={16} color="#FFF" />
-              </TouchableOpacity>
-              {/* <TouchableOpacity style={styles.rankingsButton}>
-                <Link href="/area-ranking">
-                  <Text style={styles.rankingsButtonText}>See Area Rankings</Text>
-                </Link>
-                <Ionicons name="chevron-forward" size={16} color="#FFF" />
-              </TouchableOpacity> */}
-              {/* <TouchableOpacity style={styles.rankingsButton}>
-                <Link href="/area-ranking" style={styles.rankingsButtonText}>
-                  See Area Rankings
+              <View style={styles.buttonsContainer}>
+                <TouchableOpacity 
+                  style={styles.rankingsButton}
+                  onPress={() => navigation.navigate('AreaSafetyRankings')}
+                >
+                  <L href='/area-ranking'><Text style={styles.rankingsButtonText}>See Area Rankings</Text></L>
                   <Ionicons name="chevron-forward" size={16} color="#FFF" />
-                </Link>
-              </TouchableOpacity> */}
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={styles.sosButtonSmall}
+                  onPress={() => setShowSOS(!showSOS)}
+                >
+                  <Text style={styles.sosButtonText}>SOS</Text>
+                  <Ionicons name="alert-circle" size={16} color="#FFF" />
+                </TouchableOpacity>
+              </View>
             </View>
+
+            {showSOS && (
+              <View style={styles.sosContainer}>
+                <SOSFeature 
+                  message="Emergency! I need help at my location in the community."
+                  gestureThreshold={3}
+                />
+              </View>
+            )}
 
             <Text style={styles.sectionTitle}>Safety Trend</Text>
             {safetyData.trendData && safetyData.trendData.labels && safetyData.trendData.datasets ? (
@@ -310,7 +319,6 @@ const CommunityPage: React.FC = () => {
       <ScrollView style={styles.contentContainer}>
         {renderTabContent()}
       </ScrollView>
-    {/* <View style={styles.space}></View> */}
       <Navbar/>
     </SafeAreaView>
     
@@ -376,6 +384,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20
   },
+  buttonsContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    gap: 10
+  },
   scoreContainer: {
     width: 100,
     height: 100,
@@ -411,6 +424,27 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontWeight: 'bold',
     marginRight: 4
+  },
+  sosButtonSmall: {
+    backgroundColor: '#e74c3c',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sosButtonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    marginRight: 4
+  },
+  sosContainer: {
+    marginBottom: 20,
+    borderRadius: 8,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
   },
   sectionTitle: {
     fontSize: 18,

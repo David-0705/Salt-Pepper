@@ -105,7 +105,7 @@ neighborhoods: [
       { id: 1, name: 'Mahim West', latitude: 19.0369, longitude: 72.8397, safetyScore: 83, crimes: { theft: 15, assault: 8, vandalism: 7 } },
       { id: 2, name: 'Mahim East', latitude: 19.0420, longitude: 72.8461, safetyScore: 90, crimes: { theft: 6, assault: 2, vandalism: 3 } },
       { id: 3, name: 'Shivaji Park', latitude: 19.0284, longitude: 72.8382, safetyScore: 84, crimes: { theft: 9, assault: 4, vandalism: 5 } },
-      { id: 4, name: 'Mahim Creek', latitude: 19.0448, longitude: 72.8335, safetyScore: 86, crimes: { theft: 7, assault: 3, vandalism: 4 } },
+      { id: 4, name: 'Mahim Creek', latitude: 19.0448, longitude: 72.8389, safetyScore: 86, crimes: { theft: 7, assault: 3, vandalism: 4 } },
     ],
     safetyTrends: {
       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
