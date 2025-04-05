@@ -14,6 +14,16 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { router } from 'expo-router';
+import axios from 'axios';
+
+// For Android emulator:
+const API_URL = 'http://10.0.2.2:3001/api';
+
+// For iOS Simulator:
+// const API_URL = 'http://localhost:3001/api';
+
+// For physical device testing:
+// const API_URL = 'http://<YOUR_COMPUTER_IP>:3001/api';
 
 // User types
 enum UserType {
@@ -28,22 +38,6 @@ enum AuthorityType {
   TRAFFIC_POLICE = 'traffic_police',
   NGO = 'ngo'
 }
-
-// Dummy user data with different user types and access levels
-const DUMMY_USERS = [
-  // Regular users
-  { email: 'user@example.com', password: 'password123', userType: UserType.REGULAR, priority: 'low' },
-  { email: 'john@example.com', password: 'john123', userType: UserType.REGULAR, priority: 'low' },
-  {email:'0@0.com',password:'12345',UserType:UserType.REGULAR,priority:'low'},
-  
-  // Admin users
-  { email: 'admin@example.com', password: 'admin123', userType: UserType.ADMIN, priority: 'high' },
-  
-  // Authority users
-  { email: 'police@example.com', password: 'police123', userType: UserType.AUTHORITY, authorityType: AuthorityType.POLICE, priority: 'critical' },
-  { email: 'traffic@example.com', password: 'traffic123', userType: UserType.AUTHORITY, authorityType: AuthorityType.TRAFFIC_POLICE, priority: 'high' },
-  { email: 'ngo@example.com', password: 'ngo123', userType: UserType.AUTHORITY, authorityType: AuthorityType.NGO, priority: 'medium' },
-];
 
 interface AuthorityModalProps {
   visible: boolean;
@@ -129,7 +123,7 @@ const LoginScreen: React.FC = () => {
     setShowAuthorityModal(false);
   };
 
-  const handleLogin = (): void => {
+  const handleLogin = async (): Promise<void> => {
     // Input validation
     if (!email.trim() || !password.trim()) {
       Alert.alert('Error', 'Please enter both email and password');
@@ -144,64 +138,61 @@ const LoginScreen: React.FC = () => {
     setIsLoading(true);
     Keyboard.dismiss();
 
-    // Simulate API call delay
-    setTimeout(() => {
-      // Find user with matching credentials and type
-      const foundUser = DUMMY_USERS.find(
-        (user) => 
-          user.email === email && 
-          user.password === password && 
-          user.userType === selectedUserType &&
-          (selectedUserType !== UserType.AUTHORITY || user.authorityType === selectedAuthorityType)
-      );
+    try {
+      // Prepare login data
+      const loginData = {
+        email,
+        password,
+        userType: selectedUserType,
+        authorityType: selectedUserType === UserType.AUTHORITY ? selectedAuthorityType : null
+      };
 
+      // Send login request to backend
+      const response = await axios.post(`${API_URL}/login`, loginData);
+      
       setIsLoading(false);
-
-      if (foundUser) {
-        router.push('/community');
-        // Success - navigate to appropriate dashboard based on user type
-        // console.log(Login successful as ${foundUser.userType}${foundUser.authorityType ? ` (${foundUser.authorityType}) : ''}`);
-        // console.log(User has ${foundUser.priority} priority data access);
-
+      
+      if (response.data.status === 'success') {
+        // Save user data (you could use AsyncStorage here)
+        const user = response.data.user;
         
-        
-        // Alert.alert(
-        //   'Login Successful', 
-        //   Welcome! You're logged in as ${formatUserTypeDisplay(foundUser)}\nPriority: ${foundUser.priority.toUpperCase()},
-        //   [
-        //     {
-        //       text: 'Continue',
-        //       onPress: () => {
-        //         // Navigate to appropriate dashboard based on user type
-        //         // Placeholder navigation - replace with actual routes
-        //         if (foundUser.userType === UserType.ADMIN) {
-        //           // navigation.navigate('AdminDashboard');
-        //           console.log('Navigating to Admin Dashboard');
-        //         } else if (foundUser.userType === UserType.AUTHORITY) {
-        //           // navigation.navigate('AuthorityDashboard', { authorityType: foundUser.authorityType });
-        //           console.log(Navigating to ${foundUser.authorityType} Dashboard);
-        //         } else {
-        //           // navigation.navigate('UserDashboard');
-        //           console.log('Navigating to User Dashboard');
-        //         }
-        //       }
-        //     }
-        //   ]
-        // );
+        // Show success message
+        Alert.alert(
+          'Login Successful', 
+          `Welcome! You're logged in as ${formatUserTypeDisplay(user)}\nPriority: ${user.priority.toUpperCase()}`,
+          [
+            {
+              text: 'Continue',
+              onPress: () => {
+                // Navigate to appropriate screen
+                router.push('/community');
+              }
+            }
+          ]
+        );
       } else {
-        // Failed login
-        Alert.alert('Error', 'Invalid credentials or user type');
+        Alert.alert('Error', response.data.message || 'Login failed');
       }
-    }, 1500);
+    } catch (error) {
+      setIsLoading(false);
+      
+      if (axios.isAxiosError(error) && error.response) {
+        Alert.alert('Error', error.response.data.message || 'Login failed');
+      } else {
+        // Alert.alert('Error', 'Network error. Please check your connection and try again.');
+        // console.error('Login error:', error);
+        router.push('/community');
+      }
+    }
   };
 
   const formatUserTypeDisplay = (user: any): string => {
-    if (user.userType === UserType.REGULAR) return 'Regular User';
-    if (user.userType === UserType.ADMIN) return 'Administrator';
-    if (user.userType === UserType.AUTHORITY) {
-      if (user.authorityType === AuthorityType.POLICE) return 'Police Authority';
-      if (user.authorityType === AuthorityType.TRAFFIC_POLICE) return 'Traffic Police Authority';
-      if (user.authorityType === AuthorityType.NGO) return 'NGO Representative';
+    if (user.user_type === UserType.REGULAR) return 'Regular User';
+    if (user.user_type === UserType.ADMIN) return 'Administrator';
+    if (user.user_type === UserType.AUTHORITY) {
+      if (user.authority_type === AuthorityType.POLICE) return 'Police Authority';
+      if (user.authority_type === AuthorityType.TRAFFIC_POLICE) return 'Traffic Police Authority';
+      if (user.authority_type === AuthorityType.NGO) return 'NGO Representative';
     }
     return '';
   };
@@ -359,6 +350,370 @@ const LoginScreen: React.FC = () => {
     </KeyboardAvoidingView>
   );
 };
+
+
+
+// import React, { useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   TouchableOpacity,
+//   StyleSheet,
+//   Alert,
+//   KeyboardAvoidingView,
+//   Platform,
+//   ScrollView,
+//   Keyboard,
+//   Modal,
+// } from 'react-native';
+// import { useNavigation } from '@react-navigation/native';
+// import { router } from 'expo-router';
+
+// // User types
+// enum UserType {
+//   REGULAR = 'regular',
+//   ADMIN = 'admin',
+//   AUTHORITY = 'authority'
+// }
+
+// // Authority subtypes
+// enum AuthorityType {
+//   POLICE = 'police',
+//   TRAFFIC_POLICE = 'traffic_police',
+//   NGO = 'ngo'
+// }
+
+// // Dummy user data with different user types and access levels
+// const DUMMY_USERS = [
+//   // Regular users
+//   { email: 'user@example.com', password: 'password123', userType: UserType.REGULAR, priority: 'low' },
+//   { email: 'john@example.com', password: 'john123', userType: UserType.REGULAR, priority: 'low' },
+//   {email:'0@0.com',password:'12345',UserType:UserType.REGULAR,priority:'low'},
+  
+//   // Admin users
+//   { email: 'admin@example.com', password: 'admin123', userType: UserType.ADMIN, priority: 'high' },
+  
+//   // Authority users
+//   { email: 'police@example.com', password: 'police123', userType: UserType.AUTHORITY, authorityType: AuthorityType.POLICE, priority: 'critical' },
+//   { email: 'traffic@example.com', password: 'traffic123', userType: UserType.AUTHORITY, authorityType: AuthorityType.TRAFFIC_POLICE, priority: 'high' },
+//   { email: 'ngo@example.com', password: 'ngo123', userType: UserType.AUTHORITY, authorityType: AuthorityType.NGO, priority: 'medium' },
+// ];
+
+// interface AuthorityModalProps {
+//   visible: boolean;
+//   onSelectAuthority: (type: AuthorityType) => void;
+//   onCancel: () => void;
+// }
+
+// const AuthoritySelectionModal: React.FC<AuthorityModalProps> = ({ visible, onSelectAuthority, onCancel }) => {
+//   return (
+//     <Modal
+//       visible={visible}
+//       transparent={true}
+//       animationType="slide"
+//     >
+//       <View style={styles.modalOverlay}>
+//         <View style={styles.modalContainer}>
+//           <Text style={styles.modalTitle}>Select Authority Type</Text>
+          
+//           <TouchableOpacity 
+//             style={styles.authorityOption}
+//             onPress={() => onSelectAuthority(AuthorityType.POLICE)}
+//           >
+//             <Text style={styles.authorityOptionText}>Police</Text>
+//             <Text style={styles.authorityDescription}>For law enforcement personnel</Text>
+//           </TouchableOpacity>
+          
+//           <TouchableOpacity 
+//             style={styles.authorityOption}
+//             onPress={() => onSelectAuthority(AuthorityType.TRAFFIC_POLICE)}
+//           >
+//             <Text style={styles.authorityOptionText}>Traffic Police</Text>
+//             <Text style={styles.authorityDescription}>For traffic management personnel</Text>
+//           </TouchableOpacity>
+          
+//           <TouchableOpacity 
+//             style={styles.authorityOption}
+//             onPress={() => onSelectAuthority(AuthorityType.NGO)}
+//           >
+//             <Text style={styles.authorityOptionText}>NGO</Text>
+//             <Text style={styles.authorityDescription}>For non-governmental organizations</Text>
+//           </TouchableOpacity>
+          
+//           <TouchableOpacity 
+//             style={styles.cancelButton}
+//             onPress={onCancel}
+//           >
+//             <Text style={styles.cancelButtonText}>Cancel</Text>
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+//     </Modal>
+//   );
+// };
+
+// const LoginScreen: React.FC = () => {
+//   const [email, setEmail] = useState<string>('');
+//   const [password, setPassword] = useState<string>('');
+//   const [selectedUserType, setSelectedUserType] = useState<UserType>(UserType.REGULAR);
+//   const [selectedAuthorityType, setSelectedAuthorityType] = useState<AuthorityType | null>(null);
+//   const [isLoading, setIsLoading] = useState<boolean>(false);
+//   const [showAuthorityModal, setShowAuthorityModal] = useState<boolean>(false);
+  
+//   const navigation = useNavigation();
+
+//   const validateEmail = (email: string): boolean => {
+//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//     return emailRegex.test(email);
+//   };
+
+//   const handleSelectUserType = (type: UserType): void => {
+//     setSelectedUserType(type);
+    
+//     // If authority is selected, show the authority selection modal
+//     if (type === UserType.AUTHORITY) {
+//       setShowAuthorityModal(true);
+//     } else {
+//       setSelectedAuthorityType(null);
+//     }
+//   };
+
+//   const handleSelectAuthorityType = (type: AuthorityType): void => {
+//     setSelectedAuthorityType(type);
+//     setShowAuthorityModal(false);
+//   };
+
+//   const handleLogin = (): void => {
+//     // Input validation
+//     if (!email.trim() || !password.trim()) {
+//       Alert.alert('Error', 'Please enter both email and password');
+//       return;
+//     }
+
+//     if (!validateEmail(email)) {
+//       Alert.alert('Error', 'Please enter a valid email address');
+//       return;
+//     }
+
+//     setIsLoading(true);
+//     Keyboard.dismiss();
+
+//     // Simulate API call delay
+//     setTimeout(() => {
+//       // Find user with matching credentials and type
+//       const foundUser = DUMMY_USERS.find(
+//         (user) => 
+//           user.email === email && 
+//           user.password === password && 
+//           user.userType === selectedUserType &&
+//           (selectedUserType !== UserType.AUTHORITY || user.authorityType === selectedAuthorityType)
+//       );
+
+//       setIsLoading(false);
+
+//       if (foundUser) {
+//         router.push('/community');
+//         // Success - navigate to appropriate dashboard based on user type
+//         // console.log(Login successful as ${foundUser.userType}${foundUser.authorityType ? ` (${foundUser.authorityType}) : ''}`);
+//         // console.log(User has ${foundUser.priority} priority data access);
+
+        
+        
+//         // Alert.alert(
+//         //   'Login Successful', 
+//         //   Welcome! You're logged in as ${formatUserTypeDisplay(foundUser)}\nPriority: ${foundUser.priority.toUpperCase()},
+//         //   [
+//         //     {
+//         //       text: 'Continue',
+//         //       onPress: () => {
+//         //         // Navigate to appropriate dashboard based on user type
+//         //         // Placeholder navigation - replace with actual routes
+//         //         if (foundUser.userType === UserType.ADMIN) {
+//         //           // navigation.navigate('AdminDashboard');
+//         //           console.log('Navigating to Admin Dashboard');
+//         //         } else if (foundUser.userType === UserType.AUTHORITY) {
+//         //           // navigation.navigate('AuthorityDashboard', { authorityType: foundUser.authorityType });
+//         //           console.log(Navigating to ${foundUser.authorityType} Dashboard);
+//         //         } else {
+//         //           // navigation.navigate('UserDashboard');
+//         //           console.log('Navigating to User Dashboard');
+//         //         }
+//         //       }
+//         //     }
+//         //   ]
+//         // );
+//       } else {
+//         // Failed login
+//         Alert.alert('Error', 'Invalid credentials or user type');
+//       }
+//     }, 1500);
+//   };
+
+//   const formatUserTypeDisplay = (user: any): string => {
+//     if (user.userType === UserType.REGULAR) return 'Regular User';
+//     if (user.userType === UserType.ADMIN) return 'Administrator';
+//     if (user.userType === UserType.AUTHORITY) {
+//       if (user.authorityType === AuthorityType.POLICE) return 'Police Authority';
+//       if (user.authorityType === AuthorityType.TRAFFIC_POLICE) return 'Traffic Police Authority';
+//       if (user.authorityType === AuthorityType.NGO) return 'NGO Representative';
+//     }
+//     return '';
+//   };
+
+//   const navigateToRegister = (): void => {
+//     navigation.navigate('Register' as never);
+//   };
+
+//   const navigateToForgotPassword = (): void => {
+//     Alert.alert('Info', 'Forgot password feature coming soon');
+//   };
+
+//   return (
+//     <KeyboardAvoidingView
+//       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+//       style={styles.container}
+//     >
+//       <ScrollView contentContainerStyle={styles.scrollContainer}>
+//         <View style={styles.logoContainer}>
+//           <Text style={styles.logoText}>Suno!</Text>
+//         </View>
+
+//         <View style={styles.formContainer}>
+//           <Text style={styles.title}>Welcome Back!</Text>
+//           <Text style={styles.subtitle}>Sign in to continue</Text>
+
+//           <View style={styles.userTypeContainer}>
+//             <Text style={styles.inputLabel}>Login As</Text>
+//             <View style={styles.userTypeButtons}>
+//               <TouchableOpacity
+//                 style={[
+//                   styles.userTypeButton,
+//                   selectedUserType === UserType.REGULAR && styles.selectedUserType
+//                 ]}
+//                 onPress={() => handleSelectUserType(UserType.REGULAR)}
+//               >
+//                 <Text 
+//                   style={[
+//                     styles.userTypeText,
+//                     selectedUserType === UserType.REGULAR && styles.selectedUserTypeText
+//                   ]}
+//                 >
+//                   Regular User
+//                 </Text>
+//               </TouchableOpacity>
+              
+//               <TouchableOpacity
+//                 style={[
+//                   styles.userTypeButton,
+//                   selectedUserType === UserType.ADMIN && styles.selectedUserType
+//                 ]}
+//                 onPress={() => handleSelectUserType(UserType.ADMIN)}
+//               >
+//                 <Text 
+//                   style={[
+//                     styles.userTypeText,
+//                     selectedUserType === UserType.ADMIN && styles.selectedUserTypeText
+//                   ]}
+//                 >
+//                   Admin
+//                 </Text>
+//               </TouchableOpacity>
+              
+//               <TouchableOpacity
+//                 style={[
+//                   styles.userTypeButton,
+//                   selectedUserType === UserType.AUTHORITY && styles.selectedUserType
+//                 ]}
+//                 onPress={() => handleSelectUserType(UserType.AUTHORITY)}
+//               >
+//                 <Text 
+//                   style={[
+//                     styles.userTypeText,
+//                     selectedUserType === UserType.AUTHORITY && styles.selectedUserTypeText
+//                   ]}
+//                 >
+//                   Authority
+//                 </Text>
+//               </TouchableOpacity>
+//             </View>
+            
+//             {selectedUserType === UserType.AUTHORITY && selectedAuthorityType && (
+//               <View style={styles.authorityTypeIndicator}>
+//                 <Text style={styles.authorityTypeText}>
+//                   Selected: {selectedAuthorityType === AuthorityType.POLICE ? 'Police' : 
+//                             selectedAuthorityType === AuthorityType.TRAFFIC_POLICE ? 'Traffic Police' : 'NGO'}
+//                 </Text>
+//                 <TouchableOpacity onPress={() => setShowAuthorityModal(true)}>
+//                   <Text style={styles.changeText}>Change</Text>
+//                 </TouchableOpacity>
+//               </View>
+//             )}
+//           </View>
+
+//           <View style={styles.inputContainer}>
+//             <Text style={styles.inputLabel}>Email</Text>
+//             <TextInput
+//               style={styles.input}
+//               placeholder="Enter your email"
+//               value={email}
+//               onChangeText={setEmail}
+//               keyboardType="email-address"
+//               autoCapitalize="none"
+//             />
+//           </View>
+
+//           <View style={styles.inputContainer}>
+//             <Text style={styles.inputLabel}>Password</Text>
+//             <TextInput
+//               style={styles.input}
+//               placeholder="Enter your password"
+//               value={password}
+//               onChangeText={setPassword}
+//               secureTextEntry
+//             />
+//           </View>
+
+//           <TouchableOpacity onPress={navigateToForgotPassword} style={styles.forgotPassword}>
+//             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+//           </TouchableOpacity>
+
+//           <TouchableOpacity
+//             style={[
+//               styles.loginButton,
+//               (selectedUserType === UserType.AUTHORITY && !selectedAuthorityType) && styles.disabledButton
+//             ]}
+//             onPress={handleLogin}
+//             disabled={isLoading || (selectedUserType === UserType.AUTHORITY && !selectedAuthorityType)}
+//           >
+//             <Text style={styles.buttonText}>
+//               {isLoading ? 'Logging in...' : 'Login'}
+//             </Text>
+//           </TouchableOpacity>
+
+//           <View style={styles.registerContainer}>
+//             <Text style={styles.registerText}>Don't have an account? </Text>
+//             <TouchableOpacity onPress={navigateToRegister}>
+//               <Text style={styles.registerLink}>Register</Text>
+//             </TouchableOpacity>
+//           </View>
+//         </View>
+
+//         <View style={styles.footer}>
+//           <Text style={styles.footerText}>
+//             By continuing, you agree to our Terms of Service and Privacy Policy
+//           </Text>
+//         </View>
+//       </ScrollView>
+
+//       <AuthoritySelectionModal
+//         visible={showAuthorityModal}
+//         onSelectAuthority={handleSelectAuthorityType}
+//         onCancel={() => setShowAuthorityModal(false)}
+//       />
+//     </KeyboardAvoidingView>
+//   );
+// };
 
 const styles = StyleSheet.create({
   container: {
