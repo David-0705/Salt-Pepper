@@ -11,9 +11,11 @@ import {
   ScrollView,
   Keyboard,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // User types
 enum UserType {
@@ -29,21 +31,9 @@ enum AuthorityType {
   NGO = 'ngo'
 }
 
-// Dummy user data with different user types and access levels
-const DUMMY_USERS = [
-  // Regular users
-  { email: 'user@example.com', password: 'password123', userType: UserType.REGULAR, priority: 'low' },
-  { email: 'john@example.com', password: 'john123', userType: UserType.REGULAR, priority: 'low' },
-  {email:'0@0.com',password:'12345',UserType:UserType.REGULAR,priority:'low'},
-  
-  // Admin users
-  { email: 'admin@example.com', password: 'admin123', userType: UserType.ADMIN, priority: 'high' },
-  
-  // Authority users
-  { email: 'police@example.com', password: 'police123', userType: UserType.AUTHORITY, authorityType: AuthorityType.POLICE, priority: 'critical' },
-  { email: 'traffic@example.com', password: 'traffic123', userType: UserType.AUTHORITY, authorityType: AuthorityType.TRAFFIC_POLICE, priority: 'high' },
-  { email: 'ngo@example.com', password: 'ngo123', userType: UserType.AUTHORITY, authorityType: AuthorityType.NGO, priority: 'medium' },
-];
+// Replace with your actual backend API URL
+// For development, use your local IP address or ngrok URL
+const API_BASE_URL = 'http://192.168.0.13:5000/api'; // Update with your server URL
 
 interface AuthorityModalProps {
   visible: boolean;
@@ -116,7 +106,6 @@ const LoginScreen: React.FC = () => {
   const handleSelectUserType = (type: UserType): void => {
     setSelectedUserType(type);
     
-    // If authority is selected, show the authority selection modal
     if (type === UserType.AUTHORITY) {
       setShowAuthorityModal(true);
     } else {
@@ -129,85 +118,86 @@ const LoginScreen: React.FC = () => {
     setShowAuthorityModal(false);
   };
 
-  const handleLogin = (): void => {
-    // Input validation
+  const handleLogin = async (): Promise<void> => {
+    // Existing validation code remains the same
     if (!email.trim() || !password.trim()) {
       Alert.alert('Error', 'Please enter both email and password');
       return;
     }
-
+  
     if (!validateEmail(email)) {
       Alert.alert('Error', 'Please enter a valid email address');
       return;
     }
-
+  
+    if (selectedUserType === UserType.AUTHORITY && !selectedAuthorityType) {
+      Alert.alert('Error', 'Please select your authority type');
+      return;
+    }
+  
     setIsLoading(true);
     Keyboard.dismiss();
-
-    // Simulate API call delay
-    setTimeout(() => {
-      // Find user with matching credentials and type
-      const foundUser = DUMMY_USERS.find(
-        (user) => 
-          user.email === email && 
-          user.password === password && 
-          user.userType === selectedUserType &&
-          (selectedUserType !== UserType.AUTHORITY || user.authorityType === selectedAuthorityType)
-      );
-
-      setIsLoading(false);
-
-      if (foundUser) {
-        router.push('/community');
-        // Success - navigate to appropriate dashboard based on user type
-        // console.log(Login successful as ${foundUser.userType}${foundUser.authorityType ? ` (${foundUser.authorityType}) : ''}`);
-        // console.log(User has ${foundUser.priority} priority data access);
-
-        
-        
-        // Alert.alert(
-        //   'Login Successful', 
-        //   Welcome! You're logged in as ${formatUserTypeDisplay(foundUser)}\nPriority: ${foundUser.priority.toUpperCase()},
-        //   [
-        //     {
-        //       text: 'Continue',
-        //       onPress: () => {
-        //         // Navigate to appropriate dashboard based on user type
-        //         // Placeholder navigation - replace with actual routes
-        //         if (foundUser.userType === UserType.ADMIN) {
-        //           // navigation.navigate('AdminDashboard');
-        //           console.log('Navigating to Admin Dashboard');
-        //         } else if (foundUser.userType === UserType.AUTHORITY) {
-        //           // navigation.navigate('AuthorityDashboard', { authorityType: foundUser.authorityType });
-        //           console.log(Navigating to ${foundUser.authorityType} Dashboard);
-        //         } else {
-        //           // navigation.navigate('UserDashboard');
-        //           console.log('Navigating to User Dashboard');
-        //         }
-        //       }
-        //     }
-        //   ]
-        // );
-      } else {
-        // Failed login
-        Alert.alert('Error', 'Invalid credentials or user type');
+  
+    try {
+      const loginData = {
+        email,
+        password,
+        userType: selectedUserType,
+        ...(selectedUserType === UserType.AUTHORITY && { authorityType: selectedAuthorityType })
+      };
+  
+      console.log('Sending login request to:', `${API_BASE_URL}/login`);
+      console.log('Login data:', JSON.stringify(loginData));
+  
+      const response = await fetch(`${API_BASE_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginData),
+      });
+      
+      // Log the status and text before parsing
+      console.log('Response status:', response.status);
+      const responseText = await response.text();
+      console.log('Response text:', responseText);
+      
+      // Then try to parse it (if it's valid JSON)
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('JSON parse error:', parseError);
+        throw new Error('Invalid response format');
       }
-    }, 1500);
-  };
-
-  const formatUserTypeDisplay = (user: any): string => {
-    if (user.userType === UserType.REGULAR) return 'Regular User';
-    if (user.userType === UserType.ADMIN) return 'Administrator';
-    if (user.userType === UserType.AUTHORITY) {
-      if (user.authorityType === AuthorityType.POLICE) return 'Police Authority';
-      if (user.authorityType === AuthorityType.TRAFFIC_POLICE) return 'Traffic Police Authority';
-      if (user.authorityType === AuthorityType.NGO) return 'NGO Representative';
+  
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+  
+      // Rest of the code that uses data remains the same
+      await AsyncStorage.setItem('authToken', data.token);
+      await AsyncStorage.setItem('userData', JSON.stringify(data.user));
+  
+      // Navigate based on user type
+      if (data.user.userType === UserType.ADMIN) {
+        router.replace('/community');
+      } else if (data.user.userType === UserType.AUTHORITY) {
+        router.replace('/community');
+      } else {
+        router.replace('/community');
+      }
+  
+    } catch (error) {
+      console.error('Login error:', error);
+      Alert.alert('Error', error.message || 'Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-    return '';
   };
 
   const navigateToRegister = (): void => {
-    navigation.navigate('Register' as never);
+    router.replace('/register');
   };
 
   const navigateToForgotPassword = (): void => {
@@ -219,7 +209,10 @@ const LoginScreen: React.FC = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.logoContainer}>
           <Text style={styles.logoText}>Suno!</Text>
         </View>
@@ -305,6 +298,8 @@ const LoginScreen: React.FC = () => {
               onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
+              autoComplete="email"
+              textContentType="emailAddress"
             />
           </View>
 
@@ -316,6 +311,8 @@ const LoginScreen: React.FC = () => {
               value={password}
               onChangeText={setPassword}
               secureTextEntry
+              autoComplete="password"
+              textContentType="password"
             />
           </View>
 
@@ -331,9 +328,11 @@ const LoginScreen: React.FC = () => {
             onPress={handleLogin}
             disabled={isLoading || (selectedUserType === UserType.AUTHORITY && !selectedAuthorityType)}
           >
-            <Text style={styles.buttonText}>
-              {isLoading ? 'Logging in...' : 'Login'}
-            </Text>
+            {isLoading ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <Text style={styles.buttonText}>Login</Text>
+            )}
           </TouchableOpacity>
 
           <View style={styles.registerContainer}>
@@ -360,6 +359,7 @@ const LoginScreen: React.FC = () => {
   );
 };
 
+// Styles remain the same as in your original code
 const styles = StyleSheet.create({
   container: {
     flex: 1,

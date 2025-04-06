@@ -11,10 +11,7 @@ import {
   ScrollView,
   Keyboard,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-
-// Dummy user data - for validation purposes
-const EXISTING_EMAILS = ['user@example.com', 'john@example.com', 'demo@example.com'];
+import { router } from 'expo-router';
 
 const RegisterScreen = () => {
   const [fullName, setFullName] = useState('');
@@ -22,71 +19,74 @@ const RegisterScreen = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const navigation = useNavigation();
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isValid = emailRegex.test(email);
-    if (!isValid) console.log('Invalid email format:', email);
-    return isValid;
+    return emailRegex.test(email);
   };
 
-  const handleRegister = (): void => {
-    console.log('Attempting registration...');
-
+  const API_BASE_URL = 'http://192.168.0.13:5000/api';
+  const handleRegister = async (): Promise<void> => {
     // Input validation
     if (!fullName.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
-      console.log('Validation failed: Missing fields');
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
     if (!validateEmail(email)) {
-      console.log('Validation failed: Invalid email format');
       Alert.alert('Error', 'Please enter a valid email address');
       return;
     }
 
     if (password.length < 6) {
-      console.log('Validation failed: Password too short');
       Alert.alert('Error', 'Password must be at least 6 characters long');
       return;
     }
 
     if (password !== confirmPassword) {
-      console.log('Validation failed: Passwords do not match');
       Alert.alert('Error', 'Passwords do not match');
       return;
     }
 
-    if (EXISTING_EMAILS.includes(email)) {
-      console.log('Validation failed: Email already exists');
-      Alert.alert('Error', 'Email already registered');
-      return;
-    }
-
-    console.log('All validations passed! Proceeding with registration...');
     setIsLoading(true);
     Keyboard.dismiss();
 
-    // Simulate API call delay
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const response = await fetch(`${API_BASE_URL}/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName,
+          email,
+          password,
+          userType: 'regular' // Default user type
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
       Alert.alert('Success', 'Account created successfully!', [
         {
           text: 'Login',
-          onPress: () => {
-            console.log('Navigating to login screen');
-            navigation.goBack();
-          },
+          onPress: () => router.replace('/login'),
         },
       ]);
-    }, 1500);
+    } catch (error) {
+      console.error('Registration error:', error);
+      Alert.alert('Error', error.message || 'Failed to register. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const navigateToLogin = (): void => {
-    console.log('Navigating to login screen');
-    navigation.goBack();
+    router.replace('/login');
   };
 
   return (
