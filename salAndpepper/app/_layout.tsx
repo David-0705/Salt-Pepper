@@ -13,6 +13,13 @@ export default function RootLayout() {
     <Stack.Screen name="register" options={{ headerShown: false }} />
     <Stack.Screen name="CrimeReport" options={{ headerShown: false }} />
     <Stack.Screen name="CrimeInfo" options={{ headerShown: false }} />
+    <Stack.Screen 
+        name="view" 
+        options={{ 
+          presentation: 'modal', // optional: makes it slide up as a modal
+        }} 
+      />
+    
     
   </Stack>;
 }

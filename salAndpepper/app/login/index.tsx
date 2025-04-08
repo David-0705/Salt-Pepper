@@ -33,7 +33,7 @@ enum AuthorityType {
 
 // Replace with your actual backend API URL
 // For development, use your local IP address or ngrok URL
-const API_BASE_URL = 'http://192.168.0.13:5000/api'; // Update with your server URL
+const API_BASE_URL = 'http://192.168.59.92:5000/api'; // Update with your server URL
 
 interface AuthorityModalProps {
   visible: boolean;
@@ -258,7 +258,7 @@ const LoginScreen: React.FC = () => {
                 </Text>
               </TouchableOpacity>
               
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={[
                   styles.userTypeButton,
                   selectedUserType === UserType.AUTHORITY && styles.selectedUserType
@@ -273,7 +273,7 @@ const LoginScreen: React.FC = () => {
                 >
                   Authority
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             
             {selectedUserType === UserType.AUTHORITY && selectedAuthorityType && (

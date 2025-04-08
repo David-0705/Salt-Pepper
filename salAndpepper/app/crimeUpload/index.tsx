@@ -1,8 +1,456 @@
+// "use client"
+
+// import type React from "react"
+// import Navbar from "@/components/navbar";
+// import { useState, useEffect } from "react"
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   TouchableOpacity,
+//   StyleSheet,
+//   ScrollView,
+//   TouchableWithoutFeedback,
+//   Image,
+//   Platform,
+//   Alert,
+//   Switch,
+//   ActivityIndicator,
+// } from "react-native"
+// import { SafeAreaView } from "react-native-safe-area-context"
+// import { Camera, MapPin, Upload, AlertTriangle, ChevronDown, X } from "lucide-react-native"
+// import * as ImagePicker from "expo-image-picker"
+// import * as Location from "expo-location"
+// import MapView, { Marker } from "react-native-maps"
+// import { useNavigation } from "@react-navigation/native"
+// import type { StackNavigationProp } from "@react-navigation/stack"
+
+// type MediaItem = {
+//   uri: string
+//   type: "image" | "video"
+// }
+
+// type SeverityLevel = "low" | "medium" | "high"
+
+// type RootStackParamList = {
+//   CrimeReport: undefined
+//   CrimeInfo: { category: string }
+// }
+
+// type CrimeReportScreenNavigationProp = StackNavigationProp<RootStackParamList, "CrimeReport">
+
+// const CrimeReportScreen: React.FC = () => {
+//   const navigation = useNavigation<CrimeReportScreenNavigationProp>()
+//   const [description, setDescription] = useState("")
+//   const [media, setMedia] = useState<MediaItem[]>([])
+//   const [location, setLocation] = useState<Location.LocationObject | null>(null)
+//   const [loadingLocation, setLoadingLocation] = useState(false)
+//   const [severity, setSeverity] = useState<SeverityLevel>("medium")
+//   const [isAnonymous, setIsAnonymous] = useState(false)
+//   const [severityDropdownOpen, setSeverityDropdownOpen] = useState(false)
+//   const [crimeCategory, setCrimeCategory] = useState<string>("")
+//   const [crimeCategoryDropdownOpen, setCrimeCategoryDropdownOpen] = useState(false)
+
+//   // Mock function for onViewCrimeInfo (replace with actual implementation)
+//   const onViewCrimeInfo = (category: string) => {
+//     console.log(`Navigating to CrimeInfo screen for category: ${category}`)
+//     navigation.navigate("CrimeInfo", { category: category })
+//   }
+
+//   useEffect(() => {
+//     ;(async () => {
+//       const { status } = await Location.requestForegroundPermissionsAsync()
+//       if (status === "granted") {
+//         fetchLocation()
+//       }
+//     })()
+//   }, [])
+
+//   const fetchLocation = async () => {
+//     try {
+//       setLoadingLocation(true)
+//       const location = await Location.getCurrentPositionAsync({})
+//       setLocation(location)
+//     } catch (error) {
+//       Alert.alert("Error", "Unable to fetch location. Please try again or enter manually.")
+//     } finally {
+//       setLoadingLocation(false)
+//     }
+//   }
+
+//   const pickImage = async () => {
+//     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+
+//     if (status !== "granted") {
+//       Alert.alert("Permission Required", "Please allow access to your photo library to upload media.")
+//       return
+//     }
+
+//     const result = await ImagePicker.launchImageLibraryAsync({
+//       mediaTypes: ImagePicker.MediaTypeOptions.All,
+//       allowsEditing: true,
+//       quality: 0.8,
+//     })
+
+//     if (!result.canceled && result.assets && result.assets.length > 0) {
+//       const asset = result.assets[0]
+//       const newMedia: MediaItem = {
+//         uri: asset.uri,
+//         type: asset.type === "video" ? "video" : "image",
+//       }
+//       setMedia([...media, newMedia])
+//     }
+//   }
+
+//   const takePhoto = async () => {
+//     const { status } = await ImagePicker.requestCameraPermissionsAsync()
+
+//     if (status !== "granted") {
+//       Alert.alert("Permission Required", "Please allow access to your camera to take photos.")
+//       return
+//     }
+
+//     const result = await ImagePicker.launchCameraAsync({
+//       mediaTypes: ImagePicker.MediaTypeOptions.All,
+//       allowsEditing: true,
+//       quality: 0.8,
+//     })
+
+//     if (!result.canceled && result.assets && result.assets.length > 0) {
+//       const asset = result.assets[0]
+//       const newMedia: MediaItem = {
+//         uri: asset.uri,
+//         type: asset.type === "video" ? "video" : "image",
+//       }
+//       setMedia([...media, newMedia])
+//     }
+//   }
+
+//   const removeMedia = (index: number) => {
+//     const updatedMedia = [...media]
+//     updatedMedia.splice(index, 1)
+//     setMedia(updatedMedia)
+//   }
+
+//   const renderSeverityDropdown = () => {
+//     const severityOptions = [
+//       { value: "low", label: "Low - Non-emergency situation" },
+//       { value: "medium", label: "Medium - Concerning but not immediate danger" },
+//       { value: "high", label: "High - Emergency situation" },
+//     ]
+
+//     const crimeCategories = [
+//       { value: "domestic_violence", label: "Domestic Violence" },
+//       { value: "theft_burglary", label: "Theft/Burglary" },
+//       { value: "assault", label: "Assault" },
+//       { value: "vandalism", label: "Vandalism" },
+//       { value: "drug_related", label: "Drug-Related Crimes" },
+//       { value: "cybercrime", label: "Cybercrime" },
+//       { value: "human_trafficking", label: "Human Trafficking" },
+//       { value: "homicide", label: "Homicide/Murder" },
+//       { value: "fraud_scams", label: "Fraud/Scams" },
+//       { value: "hate_crimes", label: "Hate Crimes" },
+//       { value: "sexual_offenses", label: "Sexual Offenses" },
+//       { value: "arson", label: "Arson" },
+//       { value: "public_order", label: "Public Order Crimes" },
+//       { value: "kidnapping", label: "Kidnapping/Abduction" },
+//       { value: "corruption", label: "Corruption/Bribery" },
+//       { value: "gang_related", label: "Gang-Related Crimes" },
+//       { value: "stalking", label: "Stalking and Harassment" },
+//       { value: "environmental", label: "Environmental Crimes" },
+//       { value: "other", label: "Other" },
+//     ]
+
+//     return (
+//       <View style={styles.severityContainer}>
+//         <TouchableOpacity
+//           style={styles.severitySelector}
+//           onPress={() => setSeverityDropdownOpen(!severityDropdownOpen)}
+//         >
+//           <Text style={styles.severitySelectorText}>
+//             Severity: {severityOptions.find((option) => option.value === severity)?.label}
+//           </Text>
+//           <ChevronDown size={20} color="#555" />
+//         </TouchableOpacity>
+
+//         {severityDropdownOpen && (
+//           <View style={styles.dropdownMenu}>
+//             {severityOptions.map((option) => (
+//               <TouchableOpacity
+//                 key={option.value}
+//                 style={[styles.dropdownItem, severity === option.value && styles.selectedDropdownItem]}
+//                 onPress={() => {
+//                   setSeverity(option.value as SeverityLevel)
+//                   setSeverityDropdownOpen(false)
+//                 }}
+//               >
+//                 <Text style={[styles.dropdownItemText, severity === option.value && styles.selectedDropdownItemText]}>
+//                   {option.label}
+//                 </Text>
+//               </TouchableOpacity>
+//             ))}
+//           </View>
+//         )}
+//       </View>
+//     )
+//   }
+
+//   const renderCrimeCategoryDropdown = () => {
+//     const crimeCategories = [
+//       { value: "domestic_violence", label: "Domestic Violence" },
+//       { value: "theft_burglary", label: "Theft/Burglary" },
+//       { value: "assault", label: "Assault" },
+//       { value: "vandalism", label: "Vandalism" },
+//       { value: "drug_related", label: "Drug-Related Crimes" },
+//       { value: "cybercrime", label: "Cybercrime" },
+//       { value: "human_trafficking", label: "Human Trafficking" },
+//       { value: "homicideMurder", label: "Homicide/Murder" },
+//       { value: "fraud_scams", label: "Fraud/Scams" },
+//       { value: "hate_crimes", label: "Hate Crimes" },
+//       { value: "sexual_offenses", label: "Sexual Offenses" },
+//       { value: "arson", label: "Arson" },
+//       { value: "public_order_crimes", label: "Public Order Crimes" },
+//       { value: "kidnapping_abduction", label: "Kidnapping/Abduction" },
+//       { value: "corruption_bribery", label: "Corruption/Bribery" },
+//       { value: "gang_related_crimes", label: "Gang-Related Crimes" },
+//       { value: "stalking_and_harassment", label: "Stalking and Harassment" },
+//       { value: "environmental_crimes", label: "Environmental Crimes" },
+//       { value: "other", label: "Other" },
+//     ]
+
+//     return (
+//       <View style={styles.categoryContainer}>
+//       <TouchableOpacity
+//         style={styles.categorySelector}
+//         onPress={() => setCrimeCategoryDropdownOpen(!crimeCategoryDropdownOpen)}
+//       >
+//         <Text style={styles.categorySelectorText}>
+//           {crimeCategory
+//             ? crimeCategories.find((cat) => cat.value === crimeCategory)?.label
+//             : "Select Crime Category"}
+//         </Text>
+//         <ChevronDown size={20} color="#555" />
+//       </TouchableOpacity>
+
+//       {crimeCategoryDropdownOpen && (
+//         <TouchableWithoutFeedback>
+//           <View style={styles.categoryDropdownMenu}>
+//             <ScrollView
+//               style={{ maxHeight: 200 }}
+//               nestedScrollEnabled={true}
+//               keyboardShouldPersistTaps="handled"
+//               contentContainerStyle={{ flexGrow: 1 }}
+//             >
+//               {crimeCategories.map((category) => (
+//                 <TouchableOpacity
+//                   key={category.value}
+//                   style={[styles.dropdownItem, crimeCategory === category.value && styles.selectedDropdownItem]}
+//                   onPress={() => {
+//                     setCrimeCategory(category.value);
+//                     setCrimeCategoryDropdownOpen(false);
+//                   }}
+//                 >
+//                   <Text
+//                     style={[
+//                       styles.dropdownItemText,
+//                       crimeCategory === category.value && styles.selectedDropdownItemText,
+//                     ]}
+//                   >
+//                     {category.label}
+//                   </Text>
+//                 </TouchableOpacity>
+//               ))}
+//             </ScrollView>
+//           </View>
+//         </TouchableWithoutFeedback>
+//       )}
+//     </View>
+
+//     )
+//   }
+
+//   const viewCrimeInfo = () => {
+//     if (crimeCategory) {
+//       onViewCrimeInfo(crimeCategory)
+//     } else {
+//       Alert.alert("Please select a crime category first")
+//     }
+//   }
+
+//   const handleSubmit = () => {
+//     // Validate the form...
+//     if (!location || description.trim().length === 0 || !crimeCategory) {
+//       Alert.alert("Error", "Please fill in all required fields.")
+//       return
+//     }
+
+//     // Log the report data (for demonstration purposes)
+//     console.log({
+//       description,
+//       media,
+//       location,
+//       severity,
+//       crimeCategory,
+//       isAnonymous,
+//     })
+
+//     // Navigate to the CrimeInfoScreen
+//     navigation.navigate("CrimeInfo", { category: crimeCategory })
+//   }
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <ScrollView contentContainerStyle={styles.scrollContent}>
+//         <Text style={styles.title}>Report an Incident</Text>
+
+//         {/* Location Section */}
+//         <View style={styles.section}>
+//           <Text style={styles.sectionTitle}>Location</Text>
+//           <View style={styles.locationContainer}>
+//             {loadingLocation ? (
+//               <View style={styles.loadingContainer}>
+//                 <ActivityIndicator size="large" color="#4A90E2" />
+//                 <Text style={styles.loadingText}>Fetching your location...</Text>
+//               </View>
+//             ) : location ? (
+//               <>
+//                 <MapView
+//                   style={styles.map}
+//                   initialRegion={{
+//                     latitude: location.coords.latitude,
+//                     longitude: location.coords.longitude,
+//                     latitudeDelta: 0.005,
+//                     longitudeDelta: 0.005,
+//                   }}
+//                 >
+//                   <Marker
+//                     coordinate={{
+//                       latitude: location.coords.latitude,
+//                       longitude: location.coords.longitude,
+//                     }}
+//                   />
+//                 </MapView>
+//                 <Text style={styles.locationText}>
+//                   Lat: {location.coords.latitude.toFixed(6)}, Long: {location.coords.longitude.toFixed(6)}
+//                 </Text>
+//               </>
+//             ) : (
+//               <TouchableOpacity style={styles.locationButton} onPress={fetchLocation}>
+//                 <MapPin size={24} color="#4A90E2" />
+//                 <Text style={styles.locationButtonText}>Get Current Location</Text>
+//               </TouchableOpacity>
+//             )}
+//           </View>
+//         </View>
+
+//         {/* Crime Category Section */}
+//         <View style={styles.section}>
+//           <View style={styles.categoryHeaderContainer}>
+//             <Text style={styles.sectionTitle}>Crime Category</Text>
+//             {crimeCategory && (
+//               <TouchableOpacity style={styles.infoButton} onPress={viewCrimeInfo}>
+//                 <Text style={styles.infoButtonText}>View Info & Helplines</Text>
+//               </TouchableOpacity>
+//             )}
+//           </View>
+//           {renderCrimeCategoryDropdown()}
+//         </View>
+
+//         {/* Media Upload Section */}
+//         <View style={styles.section}>
+//           <Text style={styles.sectionTitle}>Media Evidence</Text>
+//           <View style={styles.mediaButtons}>
+//             <TouchableOpacity style={styles.mediaButton} onPress={takePhoto}>
+//               <Camera size={24} color="#4A90E2" />
+//               <Text style={styles.mediaButtonText}>Take Photo</Text>
+//             </TouchableOpacity>
+//             <TouchableOpacity style={styles.mediaButton} onPress={pickImage}>
+//               <Upload size={24} color="#4A90E2" />
+//               <Text style={styles.mediaButtonText}>Upload Media</Text>
+//             </TouchableOpacity>
+//           </View>
+
+//           {media.length > 0 && (
+//             <View style={styles.mediaPreviewContainer}>
+//               <Text style={styles.mediaPreviewTitle}>Uploaded Media ({media.length})</Text>
+//               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.mediaPreview}>
+//                 {media.map((item, index) => (
+//                   <View key={index} style={styles.mediaItem}>
+//                     <Image source={{ uri: item.uri }} style={styles.mediaImage} />
+//                     <TouchableOpacity style={styles.removeMediaButton} onPress={() => removeMedia(index)}>
+//                       <X size={16} color="#FFF" />
+//                     </TouchableOpacity>
+//                   </View>
+//                 ))}
+//               </ScrollView>
+//             </View>
+//           )}
+//         </View>
+
+//         {/* Description Section */}
+//         <View style={styles.section}>
+//           <Text style={styles.sectionTitle}>Incident Description</Text>
+//           <TextInput
+//             style={styles.descriptionInput}
+//             multiline
+//             numberOfLines={6}
+//             placeholder="Please provide a detailed description of what you witnessed..."
+//             value={description}
+//             onChangeText={setDescription}
+//             textAlignVertical="top"
+//           />
+//         </View>
+
+//         {/* Severity Section */}
+//         <View style={styles.section}>
+//           <Text style={styles.sectionTitle}>Incident Severity</Text>
+//           {renderSeverityDropdown()}
+//         </View>
+
+//         {/* Anonymous Reporting */}
+//         <View style={styles.section}>
+//           <View style={styles.anonymousContainer}>
+//             <View style={styles.anonymousTextContainer}>
+//               <Text style={styles.sectionTitle}>Anonymous Reporting</Text>
+//               <Text style={styles.anonymousDescription}>
+//                 Your personal information will not be shared with the report. Location data will still be included.
+//               </Text>
+//             </View>
+//             <Switch
+//               value={isAnonymous}
+//               onValueChange={setIsAnonymous}
+//               trackColor={{ false: "#D1D1D6", true: "#4A90E2" }}
+//               thumbColor={Platform.OS === "android" ? "#FFFFFF" : ""}
+//             />
+//           </View>
+//         </View>
+
+//         {/* Submit Button */}
+//         <TouchableOpacity
+//           style={styles.submitButton}
+//           onPress={handleSubmit}
+//           disabled={!location || description.trim().length === 0 || !crimeCategory}
+//         >
+//           <AlertTriangle size={20} color="#FFFFFF" />
+//           <Text style={styles.submitButtonText}>Submit Report</Text>
+//         </TouchableOpacity>
+
+//         <Text style={styles.disclaimer}>
+//           In case of emergency, please call emergency services directly. This reporting tool is not a substitute for
+//           emergency services.
+//         </Text>
+//       </ScrollView>
+//       <Navbar/>
+//     </SafeAreaView>
+//   )
+// }
 "use client"
 
 import type React from "react"
 import Navbar from "@/components/navbar";
-import { useState, useEffect } from "react"
+import { Ionicons } from '@expo/vector-icons';
+import { Link,router } from 'expo-router';
+import { useState, useEffect, } from "react"
 import {
   View,
   Text,
@@ -16,6 +464,7 @@ import {
   Alert,
   Switch,
   ActivityIndicator,
+  Pressable,
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Camera, MapPin, Upload, AlertTriangle, ChevronDown, X } from "lucide-react-native"
@@ -24,10 +473,18 @@ import * as Location from "expo-location"
 import MapView, { Marker } from "react-native-maps"
 import { useNavigation } from "@react-navigation/native"
 import type { StackNavigationProp } from "@react-navigation/stack"
+import CrimeInfoScreen from "./crime-info-screen"
+
+// API URL - replace with your actual server URL
+const API_URL = 'http://192.168.59.92:5000/api';
 
 type MediaItem = {
   uri: string
   type: "image" | "video"
+  fileId?: string  // Added for server-side reference
+  filename?: string // Added for server-side reference
+  uploading?: boolean // Added to track upload status
+  uploadError?: string // Added to track upload errors
 }
 
 type SeverityLevel = "low" | "medium" | "high"
@@ -50,6 +507,8 @@ const CrimeReportScreen: React.FC = () => {
   const [severityDropdownOpen, setSeverityDropdownOpen] = useState(false)
   const [crimeCategory, setCrimeCategory] = useState<string>("")
   const [crimeCategoryDropdownOpen, setCrimeCategoryDropdownOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [userId, setUserId] = useState<string | null>(null)  // Current user ID from auth
 
   // Mock function for onViewCrimeInfo (replace with actual implementation)
   const onViewCrimeInfo = (category: string) => {
@@ -64,6 +523,10 @@ const CrimeReportScreen: React.FC = () => {
         fetchLocation()
       }
     })()
+    
+    // You would typically get this from your authentication context or storage
+    // For now, we'll use a placeholder value
+    setUserId("user123")
   }, [])
 
   const fetchLocation = async () => {
@@ -77,6 +540,66 @@ const CrimeReportScreen: React.FC = () => {
       setLoadingLocation(false)
     }
   }
+
+  const uploadMediaToServer = async (mediaItem: MediaItem): Promise<MediaItem> => {
+    try {
+      // Create a new FormData instance
+      const formData = new FormData();
+      
+      // Get the file name from the URI
+      const uriParts = mediaItem.uri.split('/');
+      const fileName = uriParts[uriParts.length - 1];
+      
+      // Append the file to the form data
+      // @ts-ignore - TypeScript doesn't like the FormData type here, but it works in React Native
+      formData.append('media', {
+        uri: mediaItem.uri,
+        name: fileName,
+        type: mediaItem.type === 'image' ? 'image/jpeg' : 'video/mp4',
+      });
+      
+      console.log('Uploading media:', fileName);
+      
+      // Make the API request
+      const response = await fetch(`${API_URL}/upload-media`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      // Check if the request was successful
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to upload media');
+      }
+      
+      // Parse the response
+      const result = await response.json();
+      
+      if (result.success && result.files && result.files.length > 0) {
+        // Return updated media item with server info
+        return {
+          ...mediaItem,
+          fileId: result.files[0].fileId,
+          filename: result.files[0].filename,
+          uploading: false
+        };
+      } else {
+        throw new Error('Invalid response from server');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      // Return the media item with error info
+      return {
+        ...mediaItem,
+        uploading: false,
+        uploadError: error instanceof Error ? error.message : 'Unknown upload error'
+      };
+    }
+  };
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -97,8 +620,24 @@ const CrimeReportScreen: React.FC = () => {
       const newMedia: MediaItem = {
         uri: asset.uri,
         type: asset.type === "video" ? "video" : "image",
+        uploading: true,
       }
-      setMedia([...media, newMedia])
+      
+      // Add to state immediately to show in UI
+      setMedia(prevMedia => [...prevMedia, newMedia]);
+      
+      // Start upload and update state when complete
+      uploadMediaToServer(newMedia).then(updatedMediaItem => {
+        setMedia(prevMedia => 
+          prevMedia.map(item => 
+            item.uri === newMedia.uri ? updatedMediaItem : item
+          )
+        );
+        
+        if (updatedMediaItem.uploadError) {
+          Alert.alert("Upload Error", `Failed to upload media: ${updatedMediaItem.uploadError}`);
+        }
+      });
     }
   }
 
@@ -121,8 +660,24 @@ const CrimeReportScreen: React.FC = () => {
       const newMedia: MediaItem = {
         uri: asset.uri,
         type: asset.type === "video" ? "video" : "image",
+        uploading: true,
       }
-      setMedia([...media, newMedia])
+      
+      // Add to state immediately to show in UI
+      setMedia(prevMedia => [...prevMedia, newMedia]);
+      
+      // Start upload and update state when complete
+      uploadMediaToServer(newMedia).then(updatedMediaItem => {
+        setMedia(prevMedia => 
+          prevMedia.map(item => 
+            item.uri === newMedia.uri ? updatedMediaItem : item
+          )
+        );
+        
+        if (updatedMediaItem.uploadError) {
+          Alert.alert("Upload Error", `Failed to upload media: ${updatedMediaItem.uploadError}`);
+        }
+      });
     }
   }
 
@@ -137,28 +692,6 @@ const CrimeReportScreen: React.FC = () => {
       { value: "low", label: "Low - Non-emergency situation" },
       { value: "medium", label: "Medium - Concerning but not immediate danger" },
       { value: "high", label: "High - Emergency situation" },
-    ]
-
-    const crimeCategories = [
-      { value: "domestic_violence", label: "Domestic Violence" },
-      { value: "theft_burglary", label: "Theft/Burglary" },
-      { value: "assault", label: "Assault" },
-      { value: "vandalism", label: "Vandalism" },
-      { value: "drug_related", label: "Drug-Related Crimes" },
-      { value: "cybercrime", label: "Cybercrime" },
-      { value: "human_trafficking", label: "Human Trafficking" },
-      { value: "homicide", label: "Homicide/Murder" },
-      { value: "fraud_scams", label: "Fraud/Scams" },
-      { value: "hate_crimes", label: "Hate Crimes" },
-      { value: "sexual_offenses", label: "Sexual Offenses" },
-      { value: "arson", label: "Arson" },
-      { value: "public_order", label: "Public Order Crimes" },
-      { value: "kidnapping", label: "Kidnapping/Abduction" },
-      { value: "corruption", label: "Corruption/Bribery" },
-      { value: "gang_related", label: "Gang-Related Crimes" },
-      { value: "stalking", label: "Stalking and Harassment" },
-      { value: "environmental", label: "Environmental Crimes" },
-      { value: "other", label: "Other" },
     ]
 
     return (
@@ -218,6 +751,7 @@ const CrimeReportScreen: React.FC = () => {
       { value: "other", label: "Other" },
     ]
 
+    
     return (
       <View style={styles.categoryContainer}>
       <TouchableOpacity
@@ -265,7 +799,6 @@ const CrimeReportScreen: React.FC = () => {
         </TouchableWithoutFeedback>
       )}
     </View>
-
     )
   }
 
@@ -277,31 +810,131 @@ const CrimeReportScreen: React.FC = () => {
     }
   }
 
-  const handleSubmit = () => {
-    // Validate the form...
-    if (!location || description.trim().length === 0 || !crimeCategory) {
-      Alert.alert("Error", "Please fill in all required fields.")
-      return
+  const handleSubmit = async () => {
+    try {
+      // Validate the form
+      if (!location || description.trim().length === 0 || !crimeCategory) {
+        Alert.alert("Error", "Please fill in all required fields.")
+        return
+      }
+      
+      // Check if any media is still uploading
+      const stillUploading = media.some(item => item.uploading);
+      if (stillUploading) {
+        Alert.alert("Please wait", "Media uploads are still in progress.")
+        return
+      }
+      
+      // Check for upload errors
+      const hasErrors = media.some(item => item.uploadError);
+      if (hasErrors) {
+        Alert.alert(
+          "Media Upload Issues", 
+          "Some media failed to upload. Would you like to proceed anyway or retry?",
+          [
+            { text: "Retry", onPress: () => {} }, // You'd implement retry logic here
+            { text: "Proceed", onPress: () => submitReport() }
+          ]
+        );
+        return;
+      }
+      
+      submitReport();
+    } catch (error) {
+      console.error("Submit error:", error);
+      Alert.alert("Error", "Something went wrong while submitting your report.");
+      setIsSubmitting(false);
     }
-
-    // Log the report data (for demonstration purposes)
-    console.log({
-      description,
-      media,
-      location,
-      severity,
-      crimeCategory,
-      isAnonymous,
-    })
-
-    // Navigate to the CrimeInfoScreen
-    navigation.navigate("CrimeInfo", { category: crimeCategory })
+  }
+  
+  const submitReport = async () => {
+    try {
+      setIsSubmitting(true);
+      
+      // Prepare media data for the API call (only include successfully uploaded media)
+      const mediaData = media
+        .filter(item => item.fileId && !item.uploadError)
+        .map(item => ({
+          fileId: item.fileId,
+          filename: item.filename,
+          type: item.type
+        }));
+      
+      // Prepare location data
+      const locationData = {
+        latitude: location?.coords.latitude,
+        longitude: location?.coords.longitude
+      };
+      
+      // Prepare the report data
+      const reportData = {
+        description,
+        location: locationData,
+        media: mediaData,
+        severity,
+        crimeCategory,
+        isAnonymous,
+        userId: isAnonymous ? null : userId
+      };
+      
+      console.log("Submitting report:", reportData);
+      
+      // Send the report to the server
+      const response = await fetch(`${API_URL}/crime-report`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reportData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to submit report');
+      }
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        Alert.alert(
+          "Report Submitted",
+          "Your crime report has been submitted successfully. Thank you for helping to keep your community safe.",
+          [
+            { 
+              text: "View Report", 
+              onPress: () => navigation.navigate("CrimeInfo", { category: crimeCategory }) 
+            },
+            { 
+              text: "OK", 
+              onPress: () => {
+                // Reset the form
+                setDescription("");
+                setMedia([]);
+                setCrimeCategory("");
+                setSeverity("medium");
+                setIsAnonymous(false);
+              } 
+            }
+          ]
+        );
+      } else {
+        throw new Error('Server returned success: false');
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
+      Alert.alert("Error", `Failed to submit report: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>Report an Incident</Text>
+       {/* <Link href="./crime-info-screen">
+        <Ionicons name="information-circle" size={24} color="blue" />
+        </Link> */}
 
         {/* Location Section */}
         <View style={styles.section}>
@@ -377,6 +1010,16 @@ const CrimeReportScreen: React.FC = () => {
                 {media.map((item, index) => (
                   <View key={index} style={styles.mediaItem}>
                     <Image source={{ uri: item.uri }} style={styles.mediaImage} />
+                    {item.uploading && (
+                      <View style={styles.mediaOverlay}>
+                        <ActivityIndicator size="small" color="#FFFFFF" />
+                      </View>
+                    )}
+                    {item.uploadError && (
+                      <View style={[styles.mediaOverlay, styles.mediaErrorOverlay]}>
+                        <Text style={styles.mediaErrorText}>!</Text>
+                      </View>
+                    )}
                     <TouchableOpacity style={styles.removeMediaButton} onPress={() => removeMedia(index)}>
                       <X size={16} color="#FFF" />
                     </TouchableOpacity>
@@ -427,12 +1070,21 @@ const CrimeReportScreen: React.FC = () => {
 
         {/* Submit Button */}
         <TouchableOpacity
-          style={styles.submitButton}
+          style={[
+            styles.submitButton, 
+            (!location || description.trim().length === 0 || !crimeCategory) && styles.submitButtonDisabled
+          ]}
           onPress={handleSubmit}
-          disabled={!location || description.trim().length === 0 || !crimeCategory}
+          disabled={!location || description.trim().length === 0 || !crimeCategory || isSubmitting}
         >
-          <AlertTriangle size={20} color="#FFFFFF" />
-          <Text style={styles.submitButtonText}>Submit Report</Text>
+          {isSubmitting ? (
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          ) : (
+            <>
+              <AlertTriangle size={20} color="#FFFFFF" />
+              <Text style={styles.submitButtonText}>Submit Report</Text>
+            </>
+          )}
         </TouchableOpacity>
 
         <Text style={styles.disclaimer}>

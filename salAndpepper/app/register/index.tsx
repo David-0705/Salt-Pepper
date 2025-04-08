@@ -25,7 +25,7 @@ const RegisterScreen = () => {
     return emailRegex.test(email);
   };
 
-  const API_BASE_URL = 'http://192.168.0.13:5000/api';
+  const API_BASE_URL = 'http://192.168.59.92:5000/api';
   const handleRegister = async (): Promise<void> => {
     // Input validation
     if (!fullName.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {

@@ -45,7 +45,6 @@ const BottomNavbar = () => {
 
 
 
-
             {/* <TouchableOpacity style={styles.navItem}>
               <Ionicons name="person-circle-outline" size={24} color="white" />
               <Text style={styles.navText}>Account</Text>
